@@ -8,6 +8,7 @@ final class RingDataPersistenceCoordinator {
 
     private var hrvSeriesAccumulator = SplitSeriesPacketParser.SeriesAccumulator()
     private var stressSeriesAccumulator = SplitSeriesPacketParser.SeriesAccumulator()
+    private let healthSleepWriter = AppleHealthSleepWriter()
 
     private static let logDateFormatter = ISO8601DateFormatter()
 
@@ -89,7 +90,11 @@ final class RingDataPersistenceCoordinator {
         }
 
         debugPrint("[AutoPersist] Sleep save requested. insertedDays=\(insertedDays) updatedDays=\(updatedDays)")
-        saveContext(tag: "Sleep")
+        if saveContext(tag: "Sleep") {
+            Task { @MainActor in
+                await healthSleepWriter.writeSleepDays(bigData.days, todayStart: today)
+            }
+        }
     }
 
     private func makeStoredPeriods(from day: SleepDay, nightDate: Date) -> [StoredSleepPeriod] {
@@ -123,7 +128,7 @@ final class RingDataPersistenceCoordinator {
         }
 
         debugPrint("[AutoPersist] Heart rate log save requested. action=\(action) dayStart=\(formatDate(dayStart))")
-        saveContext(tag: "HeartRate")
+        _ = saveContext(tag: "HeartRate")
     }
 
     // MARK: - Activity
@@ -177,7 +182,7 @@ final class RingDataPersistenceCoordinator {
         }
 
         debugPrint("[AutoPersist] Activity save requested. action=\(action) ts=\(formatDate(timestamp)) steps=\(steps) kcal=\(calories) distKm=\(distanceKm)")
-        saveContext(tag: "Activity")
+        _ = saveContext(tag: "Activity")
     }
 
     private func todayAt(hour: Int, minute: Int) -> Date {
@@ -217,7 +222,7 @@ final class RingDataPersistenceCoordinator {
             }
         }
         debugPrint("[AutoPersist] HRV save requested. inserted=\(inserted) updated=\(updated) total=\(series.count)")
-        saveContext(tag: "HRV")
+        _ = saveContext(tag: "HRV")
     }
 
     private func persistStressSeries(_ series: [TimeSeriesPoint]) {
@@ -234,7 +239,7 @@ final class RingDataPersistenceCoordinator {
             }
         }
         debugPrint("[AutoPersist] Stress save requested. inserted=\(inserted) updated=\(updated) total=\(series.count)")
-        saveContext(tag: "Stress")
+        _ = saveContext(tag: "Stress")
     }
 
     // MARK: - Blood oxygen
@@ -281,7 +286,7 @@ final class RingDataPersistenceCoordinator {
             }
         }
         debugPrint("[AutoPersist] Blood oxygen save requested. inserted=\(inserted) updated=\(updated) total=\(series.count)")
-        saveContext(tag: "BloodOxygen")
+        _ = saveContext(tag: "BloodOxygen")
     }
 
     private func dayAtHour(daysAgo: Int, hour: Int) -> Date {
@@ -293,12 +298,15 @@ final class RingDataPersistenceCoordinator {
 
     // MARK: - Shared
 
-    private func saveContext(tag: String) {
+    @discardableResult
+    private func saveContext(tag: String) -> Bool {
         do {
             try modelContext.save()
             debugPrint("[AutoPersist] SwiftData save SUCCESS (\(tag))")
+            return true
         } catch {
             debugPrint("[AutoPersist] SwiftData save FAILED (\(tag)): \(error)")
+            return false
         }
     }
 
