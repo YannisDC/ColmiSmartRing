@@ -1,0 +1,1098 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ %lld%%" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$lld%%"
+          }
+        }
+      }
+    },
+    "%@–%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@–%2$@"
+          }
+        }
+      }
+    },
+    "%lld %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld %2$@"
+          }
+        }
+      }
+    },
+    "%lld H %lld M" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld H %2$lld M"
+          }
+        }
+      }
+    },
+    "%lld h %lld min" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld h %2$lld min"
+          }
+        }
+      }
+    },
+    "%lld h %lld min · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld h %2$lld min · %3$@"
+          }
+        }
+      }
+    },
+    "%lld M" : {
+
+    },
+    "accessibility.battery.get" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get battery status from ring"
+          }
+        }
+      }
+    },
+    "accessibility.device.add_ring" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add a ring to connect"
+          }
+        }
+      }
+    },
+    "accessibility.device.connect" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connect to ring"
+          }
+        }
+      }
+    },
+    "accessibility.device.remove_ring" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove ring from app"
+          }
+        }
+      }
+    },
+    "accessibility.heart_rate.continue" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue heart rate streaming"
+          }
+        }
+      }
+    },
+    "accessibility.heart_rate.get_log" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get heart rate log from ring"
+          }
+        }
+      }
+    },
+    "accessibility.heart_rate.start" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start heart rate streaming"
+          }
+        }
+      }
+    },
+    "accessibility.heart_rate.stop" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop heart rate streaming"
+          }
+        }
+      }
+    },
+    "accessibility.settings.toggle" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toggle %@ tracking"
+          }
+        }
+      }
+    },
+    "accessibility.sleep.request" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Request sleep data from ring"
+          }
+        }
+      }
+    },
+    "accessibility.spo2.continue" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue blood oxygen streaming"
+          }
+        }
+      }
+    },
+    "accessibility.spo2.start" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start blood oxygen streaming"
+          }
+        }
+      }
+    },
+    "accessibility.spo2.stop" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop blood oxygen streaming"
+          }
+        }
+      }
+    },
+    "Activity" : {
+
+    },
+    "activity.calories.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calories (cumulative)"
+          }
+        }
+      }
+    },
+    "activity.distance.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Distance (cumulative)"
+          }
+        }
+      }
+    },
+    "activity.steps.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steps (cumulative)"
+          }
+        }
+      }
+    },
+    "Add tag" : {
+
+    },
+    "Add tag…" : {
+
+    },
+    "Attempts to reconnect to the saved ring" : {
+
+    },
+    "battery.charging" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charging: %@"
+          }
+        }
+      }
+    },
+    "battery.charging.no" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No"
+          }
+        }
+      }
+    },
+    "battery.charging.yes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yes"
+          }
+        }
+      }
+    },
+    "battery.get_status" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get Battery Status"
+          }
+        }
+      }
+    },
+    "battery.level" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery Level: %d%%"
+          }
+        }
+      }
+    },
+    "battery.section.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battery Status"
+          }
+        }
+      }
+    },
+    "Blood Oxygen" : {
+
+    },
+    "BPM" : {
+
+    },
+    "Cancel" : {
+
+    },
+    "Clear log" : {
+
+    },
+    "Command (0–255)" : {
+
+    },
+    "Connect the ring to change" : {
+
+    },
+    "Data" : {
+
+    },
+    "Data Timezone" : {
+
+    },
+    "Day" : {
+
+    },
+    "Debug" : {
+
+    },
+    "debug.blink_button" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send Blink Twice Command"
+          }
+        }
+      }
+    },
+    "debug.section.blink" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blink Twice"
+          }
+        }
+      }
+    },
+    "debug.section.increment" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Increment"
+          }
+        }
+      }
+    },
+    "debug.section.x" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "X"
+          }
+        }
+      }
+    },
+    "debug.send_command" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send command %d"
+          }
+        }
+      }
+    },
+    "debug.x_log.section" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "X Log"
+          }
+        }
+      }
+    },
+    "Decimal" : {
+
+    },
+    "Deep sleep" : {
+
+    },
+    "Delete" : {
+
+    },
+    "Delete all local data" : {
+
+    },
+    "Delete all local data?" : {
+
+    },
+    "device.add_ring" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Ring"
+          }
+        }
+      }
+    },
+    "device.add_ring_sheet.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add ring"
+          }
+        }
+      }
+    },
+    "device.cancel" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        }
+      }
+    },
+    "device.connect" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connect"
+          }
+        }
+      }
+    },
+    "device.default_ring_name" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "COLMI R02 Ring"
+          }
+        }
+      }
+    },
+    "device.remove_ring" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove ring"
+          }
+        }
+      }
+    },
+    "device.searching" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Searching for ring…"
+          }
+        }
+      }
+    },
+    "device.searching_for_ring" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Searching for Colmi ring (R02_…)..."
+          }
+        }
+      }
+    },
+    "device.section.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MY DEVICE"
+          }
+        }
+      }
+    },
+    "e.g. 01 02 03" : {
+
+    },
+    "e.g. 43" : {
+
+    },
+    "End" : {
+
+    },
+    "Error" : {
+
+    },
+    "Heart rate" : {
+
+    },
+    "Heart Rate" : {
+
+    },
+    "Heart rate (5‑min intervals)" : {
+
+    },
+    "Heart rate by day (avg)" : {
+
+    },
+    "heart_rate.get_log" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get Heart Rate Log"
+          }
+        }
+      }
+    },
+    "heart_rate.log.section.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heart Rate Log"
+          }
+        }
+      }
+    },
+    "heart_rate.section.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heart Rate"
+          }
+        }
+      }
+    },
+    "heart_rate.streaming.continue" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue Heart Rate Streaming"
+          }
+        }
+      }
+    },
+    "heart_rate.streaming.start" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Heart Rate Streaming"
+          }
+        }
+      }
+    },
+    "heart_rate.streaming.stop" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop Heart Rate Streaming"
+          }
+        }
+      }
+    },
+    "Hex" : {
+
+    },
+    "home.summary.activity" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activity"
+          }
+        }
+      }
+    },
+    "home.summary.bpm" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "bpm"
+          }
+        }
+      }
+    },
+    "home.summary.calories" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calories"
+          }
+        }
+      }
+    },
+    "home.summary.distance" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Distance"
+          }
+        }
+      }
+    },
+    "home.summary.heart_rate" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heart rate"
+          }
+        }
+      }
+    },
+    "home.summary.last_night" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last night"
+          }
+        }
+      }
+    },
+    "home.summary.no_data" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No data"
+          }
+        }
+      }
+    },
+    "home.summary.section.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Summary"
+          }
+        }
+      }
+    },
+    "home.summary.sleep" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sleep"
+          }
+        }
+      }
+    },
+    "home.summary.steps" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Steps"
+          }
+        }
+      }
+    },
+    "Hours" : {
+
+    },
+    "HRV" : {
+
+    },
+    "Kcal" : {
+
+    },
+    "Km" : {
+
+    },
+    "Last %lld entries. Responses appear when the ring replies." : {
+
+    },
+    "Light sleep" : {
+
+    },
+    "Log" : {
+
+    },
+    "metrics.screen.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metrics"
+          }
+        }
+      }
+    },
+    "Most recent" : {
+
+    },
+    "Night" : {
+
+    },
+    "No data" : {
+
+    },
+    "No Data Available" : {
+
+    },
+    "No entries yet. Send a command when connected." : {
+
+    },
+    "No heart rate data yet. Sync from the Main tab." : {
+
+    },
+    "No sleep data yet. Sync from the Main tab." : {
+
+    },
+    "No sleep stages" : {
+
+    },
+    "No valid readings for this day" : {
+
+    },
+    "Payload (hex)" : {
+
+    },
+    "profile.debug.section.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Developer tools"
+          }
+        }
+      }
+    },
+    "REM" : {
+
+    },
+    "REM duration" : {
+
+    },
+    "Requests current battery level from the ring" : {
+
+    },
+    "Requests last night sleep data from the ring" : {
+
+    },
+    "Response log" : {
+
+    },
+    "Sample data – sync activity from the ring when available." : {
+
+    },
+    "Sample data – sync blood oxygen from the ring when available." : {
+
+    },
+    "Sample data – sync HRV from the ring when available." : {
+
+    },
+    "Sample data – sync stress from the ring when available." : {
+
+    },
+    "Searching" : {
+
+    },
+    "Send" : {
+
+    },
+    "Send command" : {
+
+    },
+    "Series" : {
+
+    },
+    "settings.section.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
+          }
+        }
+      }
+    },
+    "settings.tracking.blood_oxygen" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blood Oxygen"
+          }
+        }
+      }
+    },
+    "settings.tracking.heart_rate" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heart Rate"
+          }
+        }
+      }
+    },
+    "settings.tracking.hrv" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "HRV"
+          }
+        }
+      }
+    },
+    "settings.tracking.pressure" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pressure (Stress)"
+          }
+        }
+      }
+    },
+    "Show bytes as" : {
+
+    },
+    "Sleep" : {
+
+    },
+    "sleep.days_ago" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d day(s) ago"
+          }
+        }
+      }
+    },
+    "sleep.days_count" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d day(s)"
+          }
+        }
+      }
+    },
+    "sleep.other_nights" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Other nights"
+          }
+        }
+      }
+    },
+    "sleep.request_data" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Request sleep data (Big Data)"
+          }
+        }
+      }
+    },
+    "sleep.section.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sleep"
+          }
+        }
+      }
+    },
+    "sleep.stored_nights" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stored sleep nights (%d)"
+          }
+        }
+      }
+    },
+    "spo2.section.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SPO2"
+          }
+        }
+      }
+    },
+    "spo2.streaming.continue" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continue SPO2 Streaming"
+          }
+        }
+      }
+    },
+    "spo2.streaming.start" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start SPO2 Streaming"
+          }
+        }
+      }
+    },
+    "spo2.streaming.stop" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop SPO2 Streaming"
+          }
+        }
+      }
+    },
+    "Stage" : {
+
+    },
+    "Start" : {
+
+    },
+    "Steps" : {
+
+    },
+    "Stress" : {
+
+    },
+    "Sync sleep Big Data (39, Colmi service)" : {
+
+    },
+    "Sync sleep legacy UART (0xBC 0x27)" : {
+
+    },
+    "Sync sleep today (Commands 68)" : {
+
+    },
+    "Sync sleep yesterday (Commands 68)" : {
+
+    },
+    "tab.activity" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activity"
+          }
+        }
+      }
+    },
+    "tab.debug" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Debug"
+          }
+        }
+      }
+    },
+    "tab.graphs" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Graphs"
+          }
+        }
+      }
+    },
+    "tab.home" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home"
+          }
+        }
+      }
+    },
+    "tab.main" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Main"
+          }
+        }
+      }
+    },
+    "tab.metrics" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metrics"
+          }
+        }
+      }
+    },
+    "tab.profile" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profile"
+          }
+        }
+      }
+    },
+    "Tap to connect to this ring" : {
+
+    },
+    "Tap to show sleep details" : {
+
+    },
+    "This will permanently remove all synced sleep, heart rate, activity, HRV, blood oxygen, and stress data stored on this device." : {
+
+    },
+    "Time" : {
+
+    },
+    "Time: %u · Qualities: %u" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Time: %1$u · Qualities: %2$u"
+          }
+        }
+      }
+    },
+    "Timezone" : {
+
+    },
+    "Today" : {
+
+    },
+    "Toggles tracking on the ring" : {
+
+    },
+    "Total awake time" : {
+
+    },
+    "Total deep sleep duration" : {
+
+    },
+    "Total Duration" : {
+
+    },
+    "Total light sleep duration" : {
+
+    },
+    "Total sleep per night" : {
+
+    },
+    "Value" : {
+
+    },
+    "Wake up" : {
+
+    }
+  },
+  "version" : "1.1"
+}

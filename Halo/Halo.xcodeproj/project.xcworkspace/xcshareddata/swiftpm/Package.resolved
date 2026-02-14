@@ -1,0 +1,15 @@
+{
+  "originHash" : "61750784610d49709ec51298830c2c418c9a878b7eb87a91da26e9553af55d8f",
+  "pins" : [
+    {
+      "identity" : "sleepchartkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/DanielJamesTronca/SleepChartKit",
+      "state" : {
+        "revision" : "0c1077bd035f05e912e64a34ec0c9de5b0b142d0",
+        "version" : "1.2.0"
+      }
+    }
+  ],
+  "version" : 3
+}

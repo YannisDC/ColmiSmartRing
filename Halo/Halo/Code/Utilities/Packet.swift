@@ -41,6 +41,24 @@ func checksum(packet: [UInt8]) -> UInt8 {
     return UInt8(sum % 255)
 }
 
+/// Settings/Commands protocol: 16-byte packet with [commandId, action, data[13], crc].
+/// CRC = (commandId + sum of the 13 data bytes) & 0xFF.
+func makeSettingsPacket(commandId: UInt8, action: UInt8, data: [UInt8]) throws -> [UInt8] {
+    guard data.count == 13 else {
+        throw PacketError.invalidSubDataLength
+    }
+    var packet = [UInt8](repeating: 0, count: 16)
+    packet[0] = commandId
+    packet[1] = action
+    for (i, b) in data.enumerated() {
+        packet[2 + i] = b
+    }
+    var sum = UInt(commandId)
+    for i in 2..<15 { sum += UInt(packet[i]) }
+    packet[15] = UInt8(sum & 0xFF)
+    return packet
+}
+
 // Custom errors for validation
 enum PacketError: Error {
     case invalidCommand

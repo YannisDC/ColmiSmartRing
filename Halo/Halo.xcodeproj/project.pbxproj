@@ -6,7 +6,22 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		8D93CBBB2F3D1B8400A3F8B7 /* SleepChartKit in Frameworks */ = {isa = PBXBuildFile; productRef = 8D7923812D3F1000006B07B5 /* SleepChartKit */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		8D64E69C2F3F80B100613F6D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8D7923572D3F0575006B07B5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D79235E2D3F0575006B07B5;
+			remoteInfo = Halo;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		8D64E6982F3F80B100613F6D /* HaloTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HaloTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D79235F2D3F0575006B07B5 /* Halo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Halo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -21,6 +36,11 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		8D64E6992F3F80B100613F6D /* HaloTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = HaloTests;
+			sourceTree = "<group>";
+		};
 		8D7923612D3F0575006B07B5 /* Halo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -32,10 +52,18 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		8D64E6952F3F80B100613F6D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D79235C2D3F0575006B07B5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8D93CBBB2F3D1B8400A3F8B7 /* SleepChartKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -46,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				8D7923612D3F0575006B07B5 /* Halo */,
+				8D64E6992F3F80B100613F6D /* HaloTests */,
 				8D7923602D3F0575006B07B5 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -54,6 +83,7 @@
 			isa = PBXGroup;
 			children = (
 				8D79235F2D3F0575006B07B5 /* Halo.app */,
+				8D64E6982F3F80B100613F6D /* HaloTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -61,6 +91,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		8D64E6972F3F80B100613F6D /* HaloTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8D64E6A02F3F80B100613F6D /* Build configuration list for PBXNativeTarget "HaloTests" */;
+			buildPhases = (
+				8D64E6942F3F80B100613F6D /* Sources */,
+				8D64E6952F3F80B100613F6D /* Frameworks */,
+				8D64E6962F3F80B100613F6D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8D64E69D2F3F80B100613F6D /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				8D64E6992F3F80B100613F6D /* HaloTests */,
+			);
+			name = HaloTests;
+			packageProductDependencies = (
+			);
+			productName = HaloTests;
+			productReference = 8D64E6982F3F80B100613F6D /* HaloTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		8D79235E2D3F0575006B07B5 /* Halo */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8D79236D2D3F0577006B07B5 /* Build configuration list for PBXNativeTarget "Halo" */;
@@ -78,6 +131,7 @@
 			);
 			name = Halo;
 			packageProductDependencies = (
+				8D7923812D3F1000006B07B5 /* SleepChartKit */,
 			);
 			productName = Halo;
 			productReference = 8D79235F2D3F0575006B07B5 /* Halo.app */;
@@ -90,9 +144,13 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1620;
+				LastSwiftUpdateCheck = 2620;
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
+					8D64E6972F3F80B100613F6D = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = 8D79235E2D3F0575006B07B5;
+					};
 					8D79235E2D3F0575006B07B5 = {
 						CreatedOnToolsVersion = 16.2;
 					};
@@ -107,17 +165,28 @@
 			);
 			mainGroup = 8D7923562D3F0575006B07B5;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				8D7923802D3F1000006B07B5 /* XCRemoteSwiftPackageReference "SleepChartKit" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8D7923602D3F0575006B07B5 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				8D79235E2D3F0575006B07B5 /* Halo */,
+				8D64E6972F3F80B100613F6D /* HaloTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		8D64E6962F3F80B100613F6D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D79235D2D3F0575006B07B5 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -128,6 +197,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		8D64E6942F3F80B100613F6D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D79235B2D3F0575006B07B5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -137,7 +213,67 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		8D64E69D2F3F80B100613F6D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8D79235E2D3F0575006B07B5 /* Halo */;
+			targetProxy = 8D64E69C2F3F80B100613F6D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		8D64E69E2F3F80B100613F6D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = FV42G64KZ8;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hojate.HaloTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Halo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Halo";
+				XROS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Debug;
+		};
+		8D64E69F2F3F80B100613F6D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = FV42G64KZ8;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hojate.HaloTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Halo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Halo";
+				XROS_DEPLOYMENT_TARGET = 26.2;
+			};
+			name = Release;
+		};
 		8D79236B2D3F0577006B07B5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -197,6 +333,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -253,6 +390,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -265,7 +403,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Halo/Preview Content\"";
-				DEVELOPMENT_TEAM = 6E4D9REFSW;
+				DEVELOPMENT_TEAM = FV42G64KZ8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Halo/Info.plist;
@@ -278,7 +416,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.hojate.Halo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hojate.HaloRing;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -294,7 +432,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Halo/Preview Content\"";
-				DEVELOPMENT_TEAM = 6E4D9REFSW;
+				DEVELOPMENT_TEAM = FV42G64KZ8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Halo/Info.plist;
@@ -307,7 +445,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.hojate.Halo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hojate.HaloRing;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -318,6 +456,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		8D64E6A02F3F80B100613F6D /* Build configuration list for PBXNativeTarget "HaloTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8D64E69E2F3F80B100613F6D /* Debug */,
+				8D64E69F2F3F80B100613F6D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		8D79235A2D3F0575006B07B5 /* Build configuration list for PBXProject "Halo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -337,6 +484,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8D7923802D3F1000006B07B5 /* XCRemoteSwiftPackageReference "SleepChartKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/DanielJamesTronca/SleepChartKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8D7923812D3F1000006B07B5 /* SleepChartKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8D7923802D3F1000006B07B5 /* XCRemoteSwiftPackageReference "SleepChartKit" */;
+			productName = SleepChartKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8D7923572D3F0575006B07B5 /* Project object */;
 }

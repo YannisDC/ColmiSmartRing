@@ -2,15 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSAccessorySetupBluetoothServices</key>
-	<array>
-		<string>0000180A-0000-1000-8000-00805F9B34FB</string>
-		<string>6E40FFF0-B5A3-F393-E0A9-E50E24DCCA9E</string>
-	</array>
-	<key>NSAccessorySetupKitSupports</key>
-	<array>
-		<string>Bluetooth</string>
-	</array>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Halo uses Bluetooth to find and connect to your Colmi ring.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

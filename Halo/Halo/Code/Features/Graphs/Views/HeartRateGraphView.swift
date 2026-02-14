@@ -21,8 +21,8 @@ struct HeartRateGraphView: View {
         Chart {
             ForEach(data) { point in
                 LineMark(
-                    x: .value("Time", point.time),
-                    y: .value("Heart Rate", point.heartRate)
+                    x: .value(L10n.HeartRateGraph.axisTime, point.time),
+                    y: .value(L10n.HeartRateGraph.axisHeartRate, point.heartRate)
                 )
                 .interpolationMethod(.catmullRom) // Smooth the line
             }
@@ -31,7 +31,9 @@ struct HeartRateGraphView: View {
             AxisMarks(position: .leading) // Y-axis on the left
         }
         .chartXAxis {
-            AxisMarks(values: .stride(by: .hour)) // Customize x-axis labels
+            AxisMarks(values: .stride(by: .hour, count: 4)) { value in
+                AxisValueLabel(format: .dateTime.hour())
+            }
         }
         .padding()
         .frame(height: 300) // Adjust graph size
@@ -44,11 +46,17 @@ struct HeartRateGraphContainerView: View {
     var body: some View {
         VStack {
             if data.isEmpty {
-                Text("No Data Available")
+                Text(L10n.HeartRateGraph.noDataAvailable)
                     .foregroundColor(.gray)
             } else {
                 HeartRateGraphView(data: data)
             }
         }
+    }
+}
+
+#Preview("Heart Rate (PreviewData)") {
+    List {
+        HeartRateGraphView(data: PreviewData.heartRatePoints)
     }
 }
