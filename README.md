@@ -5,6 +5,20 @@ Open-source tools and app work for Colmi smart ring data, built around one simpl
 
 If this project is useful to you, please consider giving it a star. It helps more people discover it.
 
+## Screenshots
+
+| Home | Activity |
+| --- | --- |
+| ![Home page](screenshots/homepage.PNG) | ![Activity page](screenshots/activitypage.PNG) |
+
+| Sleep Metrics | Heart Rate and HRV Metrics |
+| --- | --- |
+| ![Sleep metrics page](screenshots/metricssleeppage.PNG) | ![Heart rate and HRV metrics page](screenshots/metricsheartratehrvpage.PNG) |
+
+| Profile |
+| --- |
+| ![Profile page](screenshots/profilepage.PNG) |
+
 ## Why this project exists
 
 Most wearable ecosystems are closed. This project aims to make ring data easier to access, inspect, and use in open workflows so people can learn from their own health data without paywalls.
@@ -24,24 +38,15 @@ This requires funding for test devices and validation work.
 
 If you want to help accelerate benchmarking and development:
 
-- Sponsor on GitHub: https://github.com/sponsors/yannisdecl
-- Leave a tip (Buy Me a Coffee): https://buymeacoffee.com/yannisdecl
+- Leave a tip via Bitcoin or the Lightning Network by scanning one of the QR codes below.
+
+| Bitcoin | Lightning |
+| --- | --- |
+| ![Bitcoin tip QR code](screenshots/bitcoin.jpeg) | ![Bitcoin Lightning tip QR code](screenshots/bitcoinlightning.jpeg) |
 
 Every contribution goes back into keeping this project free and improving benchmark coverage.
 
-## Screenshots
 
-| Home | Activity |
-| --- | --- |
-| ![Home page](screenshots/homepage.PNG) | ![Activity page](screenshots/activitypage.PNG) |
-
-| Sleep Metrics | Heart Rate and HRV Metrics |
-| --- | --- |
-| ![Sleep metrics page](screenshots/metricssleeppage.PNG) | ![Heart rate and HRV metrics page](screenshots/metricsheartratehrvpage.PNG) |
-
-| Profile |
-| --- |
-| ![Profile page](screenshots/profilepage.PNG) |
 
 ## References
 
