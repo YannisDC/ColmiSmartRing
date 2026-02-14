@@ -25,8 +25,23 @@ This requires funding for test devices and validation work.
 If you want to help accelerate benchmarking and development:
 
 - Sponsor on GitHub: https://github.com/sponsors/yannisdecl
+- Leave a tip (Buy Me a Coffee): https://buymeacoffee.com/yannisdecl
 
 Every contribution goes back into keeping this project free and improving benchmark coverage.
+
+## Screenshots
+
+| Home | Activity |
+| --- | --- |
+| ![Home page](screenshots/homepage.PNG) | ![Activity page](screenshots/activitypage.PNG) |
+
+| Sleep Metrics | Heart Rate and HRV Metrics |
+| --- | --- |
+| ![Sleep metrics page](screenshots/metricssleeppage.PNG) | ![Heart rate and HRV metrics page](screenshots/metricsheartratehrvpage.PNG) |
+
+| Profile |
+| --- |
+| ![Profile page](screenshots/profilepage.PNG) |
 
 ## References
 
