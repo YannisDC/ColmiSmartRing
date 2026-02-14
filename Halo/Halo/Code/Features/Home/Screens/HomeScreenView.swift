@@ -21,8 +21,12 @@ struct HomeScreenView: View {
     }
 
     private var latestActivity: (steps: Int, distanceKm: Double, calories: Int, label: String)? {
-        guard let sample = storedActivitySamples.first else { return nil }
-        return (sample.steps, sample.distanceKm, sample.calories, "")
+        let todaySamples = storedActivitySamples.filter { Calendar.current.isDateInToday($0.timestamp) }
+        guard !todaySamples.isEmpty else { return nil }
+        let totalSteps = todaySamples.reduce(0) { $0 + $1.steps }
+        let totalDistanceKm = todaySamples.reduce(0.0) { $0 + $1.distanceKm }
+        let totalCalories = todaySamples.reduce(0) { $0 + $1.calories }
+        return (totalSteps, totalDistanceKm, totalCalories, "")
     }
 
     private var todaySleepRecord: StoredSleepDay? {

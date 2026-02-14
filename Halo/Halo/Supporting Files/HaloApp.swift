@@ -51,7 +51,7 @@ struct HaloApp: App {
                     )
                     coordinator.start()
                     ringDataPersistenceCoordinator = coordinator
-                    print("[AutoPersist] RingDataPersistenceCoordinator started")
+                    debugPrint("[AutoPersist] RingDataPersistenceCoordinator started")
                 }
             }
         }

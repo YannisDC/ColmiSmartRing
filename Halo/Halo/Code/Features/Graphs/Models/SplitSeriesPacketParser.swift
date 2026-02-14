@@ -75,8 +75,10 @@ enum SplitSeriesPacketParser {
         rangeMinutes: Int,
         startOfDay: Date = Calendar.current.startOfDay(for: Date())
     ) -> [TimeSeriesPoint] {
-        let count = expectedCount > 0 ? min(expectedCount, raw.count) : raw.count
-        let values = Array(raw.prefix(count))
+        // In real ring payloads for commands 55/57, header[2] is not reliable as a strict
+        // "number of usable samples". Truncating to that value drops valid points.
+        _ = expectedCount
+        let values = raw
         return values.enumerated().map { idx, v in
             let t = startOfDay.addingTimeInterval(TimeInterval(idx * rangeMinutes * 60))
             return TimeSeriesPoint(time: t, value: Double(v))

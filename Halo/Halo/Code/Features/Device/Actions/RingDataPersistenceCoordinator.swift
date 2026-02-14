@@ -88,7 +88,7 @@ final class RingDataPersistenceCoordinator {
             }
         }
 
-        print("[AutoPersist] Sleep save requested. insertedDays=\(insertedDays) updatedDays=\(updatedDays)")
+        debugPrint("[AutoPersist] Sleep save requested. insertedDays=\(insertedDays) updatedDays=\(updatedDays)")
         saveContext(tag: "Sleep")
     }
 
@@ -122,7 +122,7 @@ final class RingDataPersistenceCoordinator {
             action = "INSERT"
         }
 
-        print("[AutoPersist] Heart rate log save requested. action=\(action) dayStart=\(formatDate(dayStart))")
+        debugPrint("[AutoPersist] Heart rate log save requested. action=\(action) dayStart=\(formatDate(dayStart))")
         saveContext(tag: "HeartRate")
     }
 
@@ -130,17 +130,37 @@ final class RingDataPersistenceCoordinator {
 
     private func consumeActivityPacket(_ packet: [UInt8]) {
         guard packet.count >= 11, packet[0] == 67 else { return }
-        let year = 2000 + Int(packet[1])
-        let month = Int(packet[2])
-        let day = Int(packet[3])
         let timeSlot = Int(packet[4])
+        // Firmware observed in logs uses quarter-hour slots for SportsData time:
+        // 32 => 08:00, 44 => 11:00. Some variants still send 0...23.
+        let hour: Int
+        let minute: Int
+        if timeSlot <= 23 {
+            hour = timeSlot
+            minute = 0
+        } else {
+            hour = max(0, min(23, timeSlot / 4))
+            minute = (timeSlot % 4) * 15
+        }
 
-        let calories = Int(packet[5]) | (Int(packet[6]) << 8)
-        let steps = Int(packet[7]) | (Int(packet[8]) << 8)
-        let distanceRaw = Int(packet[9]) | (Int(packet[10]) << 8)
-        let distanceKm = Double(distanceRaw) / 100.0
+        // Observed SportsData payload variant:
+        // - steps at bytes 9..10
+        // - distance meters at bytes 11..12
+        // - bytes 5..8 often contain larger cumulative counters not suitable for the per-slot graph
+        let steps = Int(packet[9]) | (Int(packet[10]) << 8)
+        let distanceMeters = Int(packet[11]) | (Int(packet[12]) << 8)
+        let distanceKm = Double(distanceMeters) / 1000.0
+        let packetCalories = Int(packet[5]) | (Int(packet[6]) << 8)
+        let estimatedCalories = Int(round(Double(steps) * 0.04))
+        let calories = (1...50).contains(packetCalories) ? packetCalories : estimatedCalories
 
-        let timestamp = makeTimestamp(year: year, month: month, day: day, timeSlot: timeSlot) ?? Date()
+        // Ignore metadata/empty activity packets.
+        guard steps > 0 || distanceMeters > 0 || calories > 0 else {
+            debugPrint("[AutoPersist] Activity packet ignored (empty): \(packet)")
+            return
+        }
+
+        let timestamp = todayAt(hour: hour, minute: minute)
 
         let descriptor = FetchDescriptor<StoredActivitySample>(
             predicate: #Predicate<StoredActivitySample> { $0.timestamp == timestamp }
@@ -156,30 +176,13 @@ final class RingDataPersistenceCoordinator {
             action = "INSERT"
         }
 
-        print("[AutoPersist] Activity save requested. action=\(action) ts=\(formatDate(timestamp)) steps=\(steps) kcal=\(calories) distKm=\(distanceKm)")
+        debugPrint("[AutoPersist] Activity save requested. action=\(action) ts=\(formatDate(timestamp)) steps=\(steps) kcal=\(calories) distKm=\(distanceKm)")
         saveContext(tag: "Activity")
     }
 
-    private func makeTimestamp(year: Int, month: Int, day: Int, timeSlot: Int) -> Date? {
-        let hour: Int
-        let minute: Int
-        if (0...23).contains(timeSlot) {
-            hour = timeSlot
-            minute = 0
-        } else {
-            hour = max(0, min(23, timeSlot / 2))
-            minute = (timeSlot % 2) * 30
-        }
-
-        var components = DateComponents()
-        components.year = year
-        components.month = month
-        components.day = day
-        components.hour = hour
-        components.minute = minute
-        components.second = 0
-        components.timeZone = .current
-        return Calendar.current.date(from: components)
+    private func todayAt(hour: Int, minute: Int) -> Date {
+        let today = Calendar.current.startOfDay(for: Date())
+        return Calendar.current.date(bySettingHour: hour, minute: minute, second: 0, of: today) ?? today
     }
 
     // MARK: - HRV / Stress split-series
@@ -213,7 +216,7 @@ final class RingDataPersistenceCoordinator {
                 inserted += 1
             }
         }
-        print("[AutoPersist] HRV save requested. inserted=\(inserted) updated=\(updated) total=\(series.count)")
+        debugPrint("[AutoPersist] HRV save requested. inserted=\(inserted) updated=\(updated) total=\(series.count)")
         saveContext(tag: "HRV")
     }
 
@@ -230,7 +233,7 @@ final class RingDataPersistenceCoordinator {
                 inserted += 1
             }
         }
-        print("[AutoPersist] Stress save requested. inserted=\(inserted) updated=\(updated) total=\(series.count)")
+        debugPrint("[AutoPersist] Stress save requested. inserted=\(inserted) updated=\(updated) total=\(series.count)")
         saveContext(tag: "Stress")
     }
 
@@ -277,7 +280,7 @@ final class RingDataPersistenceCoordinator {
                 inserted += 1
             }
         }
-        print("[AutoPersist] Blood oxygen save requested. inserted=\(inserted) updated=\(updated) total=\(series.count)")
+        debugPrint("[AutoPersist] Blood oxygen save requested. inserted=\(inserted) updated=\(updated) total=\(series.count)")
         saveContext(tag: "BloodOxygen")
     }
 
@@ -293,9 +296,9 @@ final class RingDataPersistenceCoordinator {
     private func saveContext(tag: String) {
         do {
             try modelContext.save()
-            print("[AutoPersist] SwiftData save SUCCESS (\(tag))")
+            debugPrint("[AutoPersist] SwiftData save SUCCESS (\(tag))")
         } catch {
-            print("[AutoPersist] SwiftData save FAILED (\(tag)): \(error)")
+            debugPrint("[AutoPersist] SwiftData save FAILED (\(tag)): \(error)")
         }
     }
 

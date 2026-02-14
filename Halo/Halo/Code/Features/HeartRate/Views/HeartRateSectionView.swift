@@ -25,7 +25,7 @@ struct HeartRateSectionView: View {
                             let heartRatesWithTimes = try hrl.heartRatesWithTimes()
                             data = heartRatesWithTimes.map { HeartRateDataPoint(heartRate: $0.0, time: $0.1) }
                         } catch {
-                            print("Error loading data: \(error)")
+                            debugPrint("Error loading data: \(error)")
                         }
                     }
                 }
@@ -95,7 +95,7 @@ struct HeartRateSectionView: View {
             let heartRatesWithTimes = try log.toHeartRateLog().heartRatesWithTimes()
             data = heartRatesWithTimes.map { HeartRateDataPoint(heartRate: $0.0, time: $0.1) }
         } catch {
-            print("Error loading stored heart rate: \(error)")
+            debugPrint("Error loading stored heart rate: \(error)")
         }
     }
 
@@ -125,19 +125,19 @@ struct HeartRateSectionView: View {
             }
             .joined(separator: ", ")
 
-        print("========= SWIFTDATA SAVE: Heart Rate Log =========")
-        print("action: \(action)")
-        print("dayStart: \(swiftDataLogDate(dayStart))")
-        print("timestamp: \(swiftDataLogDate(log.timestamp))")
-        print("size: \(log.size), index: \(log.index), range: \(log.range)")
-        print("nonZeroHeartRates: [\(nonZeroEntries)]")
+        debugPrint("========= SWIFTDATA SAVE: Heart Rate Log =========")
+        debugPrint("action: \(action)")
+        debugPrint("dayStart: \(swiftDataLogDate(dayStart))")
+        debugPrint("timestamp: \(swiftDataLogDate(log.timestamp))")
+        debugPrint("size: \(log.size), index: \(log.index), range: \(log.range)")
+        debugPrint("nonZeroHeartRates: [\(nonZeroEntries)]")
         do {
             try modelContext.save()
-            print("result: SUCCESS")
+            debugPrint("result: SUCCESS")
         } catch {
-            print("result: FAILED - \(error)")
+            debugPrint("result: FAILED - \(error)")
         }
-        print("==================================================")
+        debugPrint("==================================================")
     }
 
     private func swiftDataLogDate(_ date: Date) -> String {

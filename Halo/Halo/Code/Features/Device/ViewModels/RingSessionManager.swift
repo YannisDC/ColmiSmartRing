@@ -379,19 +379,19 @@ class RingSessionManager: NSObject {
 // MARK: - CBCentralManagerDelegate
 extension RingSessionManager: CBCentralManagerDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        print("Central manager state: \(central.state)")
+        debugPrint("Central manager state: \(central.state)")
         switch central.state {
         case .poweredOn:
             if isDiscovering {
                 actuallyStartScan()
             } else if let id = savedRingIdentifier {
                 if let known = central.retrievePeripherals(withIdentifiers: [id]).first {
-                    print("Found previously connected peripheral")
+                    debugPrint("Found previously connected peripheral")
                     peripheral = known
                     peripheral?.delegate = self
                     connect()
                 } else {
-                    print("Known peripheral not found, starting scan")
+                    debugPrint("Known peripheral not found, starting scan")
                     startScanningForRing()
                 }
             }
@@ -432,9 +432,9 @@ extension RingSessionManager: CBCentralManagerDelegate {
             savedRingIdentifier = peripheral.identifier
             ringDisplayName = peripheral.name ?? "COLMI R02 Ring"
         }
-        print("DEBUG: Connected to peripheral: \(peripheral)")
+        debugPrint("DEBUG: Connected to peripheral: \(peripheral)")
         peripheral.delegate = self
-        print("DEBUG: Discovering services...")
+        debugPrint("DEBUG: Discovering services...")
         peripheral.discoverServices([
             CBUUID(string: Self.ringServiceUUID),
             CBUUID(string: Self.deviceInfoServiceUUID),
@@ -444,39 +444,39 @@ extension RingSessionManager: CBCentralManagerDelegate {
     }
 
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: (any Error)?) {
-        print("Disconnected from peripheral: \(peripheral)")
+        debugPrint("Disconnected from peripheral: \(peripheral)")
         peripheralConnected = false
         characteristicsDiscovered = false
         stopKeepalive()
     }
 
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: (any Error)?) {
-        print("Failed to connect to peripheral: \(peripheral), error: \(error.debugDescription)")
+        debugPrint("Failed to connect to peripheral: \(peripheral), error: \(error.debugDescription)")
     }
 }
 
 // MARK: - CBPeripheralDelegate
 extension RingSessionManager: CBPeripheralDelegate {
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: (any Error)?) {
-        print("DEBUG: Services discovery callback, error: \(String(describing: error))")
+        debugPrint("DEBUG: Services discovery callback, error: \(String(describing: error))")
         guard error == nil, let services = peripheral.services else {
-            print("DEBUG: No services found or error occurred")
+            debugPrint("DEBUG: No services found or error occurred")
             return
         }
         
-        print("DEBUG: Found \(services.count) services")
+        debugPrint("DEBUG: Found \(services.count) services")
         for service in services {
             switch service.uuid {
             case CBUUID(string: Self.ringServiceUUID):
-                print("DEBUG: Found ring service, discovering characteristics...")
+                debugPrint("DEBUG: Found ring service, discovering characteristics...")
                 peripheral.discoverCharacteristics([
                     CBUUID(string: Self.uartRxCharacteristicUUID),
                     CBUUID(string: Self.uartTxCharacteristicUUID)
                 ], for: service)
             case CBUUID(string: Self.deviceInfoServiceUUID):
-                print("DEBUG: Found device info service")
+                debugPrint("DEBUG: Found device info service")
             case CBUUID(string: Self.colmiServiceUUID):
-                print("DEBUG: Found Colmi Big Data service, discovering characteristics...")
+                debugPrint("DEBUG: Found Colmi Big Data service, discovering characteristics...")
                 peripheral.discoverCharacteristics([
                     CBUUID(string: Self.colmiWriteUUID),
                     CBUUID(string: Self.colmiNotifyUUID)
@@ -488,31 +488,31 @@ extension RingSessionManager: CBPeripheralDelegate {
     }
     
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
-        print("DEBUG: Characteristics discovery callback, error: \(String(describing: error))")
+        debugPrint("DEBUG: Characteristics discovery callback, error: \(String(describing: error))")
         guard error == nil, let characteristics = service.characteristics else {
-            print("DEBUG: No characteristics found or error occurred")
+            debugPrint("DEBUG: No characteristics found or error occurred")
             return
         }
         
-        print("DEBUG: Found \(characteristics.count) characteristics")
+        debugPrint("DEBUG: Found \(characteristics.count) characteristics")
         for characteristic in characteristics {
             switch characteristic.uuid {
             case CBUUID(string: Self.uartRxCharacteristicUUID):
-                print("DEBUG: Found UART RX characteristic")
+                debugPrint("DEBUG: Found UART RX characteristic")
                 self.uartRxCharacteristic = characteristic
             case CBUUID(string: Self.uartTxCharacteristicUUID):
-                print("DEBUG: Found UART TX characteristic")
+                debugPrint("DEBUG: Found UART TX characteristic")
                 self.uartTxCharacteristic = characteristic
                 peripheral.setNotifyValue(true, for: characteristic)
             case CBUUID(string: Self.colmiWriteUUID):
-                print("DEBUG: Found Colmi Big Data write characteristic")
+                debugPrint("DEBUG: Found Colmi Big Data write characteristic")
                 self.colmiWriteCharacteristic = characteristic
             case CBUUID(string: Self.colmiNotifyUUID):
-                print("DEBUG: Found Colmi Big Data notify characteristic")
+                debugPrint("DEBUG: Found Colmi Big Data notify characteristic")
                 self.colmiNotifyCharacteristic = characteristic
                 peripheral.setNotifyValue(true, for: characteristic)
             default:
-                print("DEBUG: Found other characteristic: \(characteristic.uuid)")
+                debugPrint("DEBUG: Found other characteristic: \(characteristic.uuid)")
             }
         }
         let wasReady = characteristicsDiscovered
@@ -528,7 +528,7 @@ extension RingSessionManager: CBPeripheralDelegate {
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         guard let value = characteristic.value else {
-            print("Failed to read characteristic value: \(String(describing: error))")
+            debugPrint("Failed to read characteristic value: \(String(describing: error))")
             return
         }
         
@@ -537,7 +537,7 @@ extension RingSessionManager: CBPeripheralDelegate {
         if characteristic.uuid == CBUUID(string: Self.colmiNotifyUUID) {
             appendToDebugLog(direction: .received, bytes: packet)
             processBigDataChunk(packet)
-            print(packet)
+            debugPrint(packet)
             return
         }
 
@@ -551,16 +551,16 @@ extension RingSessionManager: CBPeripheralDelegate {
         case RingSessionManager.CMD_READ_HEART_RATE:
             handleHeartRateLogResponse(packet: packet)
         case Counter.shared.CMD_X:
-            print("🔥")
+            debugPrint("🔥")
         case RingSessionManager.CMD_START_REAL_TIME:
             let readingType = RealTimeReading(rawValue: packet[1]) ?? .heartRate
             let errorCode = packet[2]
             
             if errorCode == 0 {
                 let readingValue = packet[3]
-                print("Real-Time Reading - Type: \(readingType), Value: \(readingValue)")
+                debugPrint("Real-Time Reading - Type: \(readingType), Value: \(readingValue)")
             } else {
-                print("Error in reading - Type: \(readingType), Error Code: \(errorCode)")
+                debugPrint("Error in reading - Type: \(readingType), Error Code: \(errorCode)")
             }
         case RingSessionManager.CMD_SLEEP_DATA:
             handleSleepDataResponse(packet: packet)
@@ -579,22 +579,22 @@ extension RingSessionManager: CBPeripheralDelegate {
             handleTrackingSettingResponse(packet: packet)
         default:
             // Log unhandled opcodes so we can identify sleep/other response formats
-            print("Unhandled response opcode: \(packet[0]) (0x\(String(format: "%02x", packet[0]))) – full packet: \(packet)")
+            debugPrint("Unhandled response opcode: \(packet[0]) (0x\(String(format: "%02x", packet[0]))) – full packet: \(packet)")
             break
         }
         
         if characteristic.uuid == CBUUID(string: Self.uartTxCharacteristicUUID) {
             if let value = characteristic.value {
-                print("Received value: \(value) : \([UInt8](value))")
+                debugPrint("Received value: \(value) : \([UInt8](value))")
             }
         }
     }
     
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
         if let error = error {
-            print("Write to characteristic failed: \(error.localizedDescription)")
+            debugPrint("Write to characteristic failed: \(error.localizedDescription)")
         } else {
-            print("Write to characteristic successful")
+            debugPrint("Write to characteristic successful")
         }
     }
 }
@@ -608,7 +608,7 @@ extension RingSessionManager {
             appendToDebugLog(direction: .sent, bytes: blinkTwicePacket)
             sendPacket(packet: blinkTwicePacket)
         } catch {
-            print("Failed to create blink twice packet: \(error)")
+            debugPrint("Failed to create blink twice packet: \(error)")
         }
     }
 }
@@ -639,14 +639,14 @@ extension RingSessionManager {
     /// Send a Big Data request on the Colmi service. Request: magic 188, dataId, dataLen=0, crc16=0xFFFF.
     func sendBigDataRequest(dataId: UInt8) {
         guard let colmiWriteCharacteristic, let peripheral else {
-            print("Cannot send Big Data request. Colmi write characteristic or peripheral not ready.")
+            debugPrint("Cannot send Big Data request. Colmi write characteristic or peripheral not ready.")
             return
         }
         let request = Self.makeBigDataRequestPacket(dataId: dataId)
         let data = Data(request)
         peripheral.writeValue(data, for: colmiWriteCharacteristic, type: .withResponse)
         appendToDebugLog(direction: .sent, bytes: request)
-        print("Big Data request sent – dataId: \(dataId), command: \(request)")
+        debugPrint("Big Data request sent – dataId: \(dataId), command: \(request)")
     }
 
     private func processBigDataChunk(_ chunk: [UInt8]) {
@@ -674,18 +674,18 @@ extension RingSessionManager {
         switch dataId {
         case Self.bigDataSleepId:
             if let sleepData = BigDataSleepParser.parseSleepPayload(payload) {
-                print("Big Data sleep received – \(sleepData.sleepDays) day(s)")
+                debugPrint("Big Data sleep received – \(sleepData.sleepDays) day(s)")
                 bigDataSleepCallback?(sleepData)
                 bigDataSleepPersistenceCallback?(sleepData)
             } else {
-                print("Big Data sleep parse failed – payload length: \(payload.count)")
+                debugPrint("Big Data sleep parse failed – payload length: \(payload.count)")
             }
         case Self.bigDataBloodOxygenId:
-            print("Big Data blood oxygen received – payload length: \(payload.count)")
+            debugPrint("Big Data blood oxygen received – payload length: \(payload.count)")
             bigDataBloodOxygenPayloadCallback?(payload)
             bigDataBloodOxygenPayloadPersistenceCallback?(payload)
         default:
-            print("Big Data response – dataId: \(dataId), payload length: \(payload.count)")
+            debugPrint("Big Data response – dataId: \(dataId), payload length: \(payload.count)")
         }
     }
 }
@@ -720,7 +720,7 @@ extension RingSessionManager {
             appendToDebugLog(direction: .sent, bytes: packet)
             sendPacket(packet: packet)
         } catch {
-            print("Keepalive packet failed: \(error)")
+            debugPrint("Keepalive packet failed: \(error)")
         }
         scheduleNextKeepalive()
     }
@@ -731,7 +731,7 @@ extension RingSessionManager {
 extension RingSessionManager {
     /// Runs when the app has connected to the ring and discovered characteristics. Requests battery, sleep (Big Data), and heart rate log with staggered delays.
     func syncOnConnect() {
-        print("Sync on connect: starting…")
+        debugPrint("Sync on connect: starting…")
         getBatteryStatus { _ in }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { [weak self] in
             guard let self else { return }
@@ -777,9 +777,9 @@ extension RingSessionManager {
             lastSleepDayOffset = dayOffset
             appendToDebugLog(direction: .sent, bytes: packet)
             sendPacket(packet: packet)
-            print("Sleep data requested (Commands 68, dayOffset: \(dayOffset))")
+            debugPrint("Sleep data requested (Commands 68, dayOffset: \(dayOffset))")
         } catch {
-            print("Failed to create sleep packet: \(error)")
+            debugPrint("Failed to create sleep packet: \(error)")
         }
     }
 
@@ -789,9 +789,9 @@ extension RingSessionManager {
             let packet = try makePacket(command: Self.CMD_SYNC_SLEEP_LEGACY, subData: [0x27])
             appendToDebugLog(direction: .sent, bytes: packet)
             sendPacket(packet: packet)
-            print("Sleep sync (legacy 0xBC 0x27) requested")
+            debugPrint("Sleep sync (legacy 0xBC 0x27) requested")
         } catch {
-            print("Failed to create legacy sleep packet: \(error)")
+            debugPrint("Failed to create legacy sleep packet: \(error)")
         }
     }
 
@@ -811,17 +811,17 @@ extension RingSessionManager {
             sleepQualities: sleepQualities,
             dayOffset: lastSleepDayOffset
         )
-        print("Sleep data received – date: \(year + 2000)-\(month)-\(day), time: \(time), qualities: \(sleepQualities)")
+        debugPrint("Sleep data received – date: \(year + 2000)-\(month)-\(day), time: \(time), qualities: \(sleepQualities)")
         sleepDataCallback?(data)
     }
 
     private func handleSleepResponse(packet: [UInt8]) {
         guard packet.count >= 2 else { return }
         let subType = packet[1]
-        print("Sleep packet (legacy 0xBC) – subType: \(subType) (0x\(String(format: "%02x", subType))), full: \(packet)")
+        debugPrint("Sleep packet (legacy 0xBC) – subType: \(subType) (0x\(String(format: "%02x", subType))), full: \(packet)")
         sleepPacketCallback?(packet)
         if subType == 255 {
-            print("Sleep: no data (ring returned 0xFF subtype)")
+            debugPrint("Sleep: no data (ring returned 0xFF subtype)")
         }
     }
 
@@ -831,9 +831,9 @@ extension RingSessionManager {
             let packet = try makePacket(command: Self.CMD_READ_HRV_DATA, subData: [UInt8(dayOffset & 0xFF)])
             appendToDebugLog(direction: .sent, bytes: packet)
             sendPacket(packet: packet)
-            print("HRV data requested (Commands 57, dayOffset/index: \(dayOffset))")
+            debugPrint("HRV data requested (Commands 57, dayOffset/index: \(dayOffset))")
         } catch {
-            print("Failed to create HRV packet: \(error)")
+            debugPrint("Failed to create HRV packet: \(error)")
         }
     }
 
@@ -843,9 +843,9 @@ extension RingSessionManager {
             let packet = try makePacket(command: Self.CMD_READ_PRESSURE_DATA, subData: [UInt8(dayOffset & 0xFF)])
             appendToDebugLog(direction: .sent, bytes: packet)
             sendPacket(packet: packet)
-            print("Pressure data requested (Commands 55, dayOffset/index: \(dayOffset))")
+            debugPrint("Pressure data requested (Commands 55, dayOffset/index: \(dayOffset))")
         } catch {
-            print("Failed to create pressure packet: \(error)")
+            debugPrint("Failed to create pressure packet: \(error)")
         }
     }
 
@@ -860,9 +860,9 @@ extension RingSessionManager {
             ])
             appendToDebugLog(direction: .sent, bytes: packet)
             sendPacket(packet: packet)
-            print("Activity data requested (Commands 67, dayOffset: \(dayOffset))")
+            debugPrint("Activity data requested (Commands 67, dayOffset: \(dayOffset))")
         } catch {
-            print("Failed to create activity packet: \(error)")
+            debugPrint("Failed to create activity packet: \(error)")
         }
     }
 
@@ -892,7 +892,7 @@ extension RingSessionManager {
     
     func sendPacket(packet: [UInt8]) {
         guard let uartRxCharacteristic, let peripheral else {
-            print("Cannot send packet. Peripheral or characteristic not ready.")
+            debugPrint("Cannot send packet. Peripheral or characteristic not ready.")
             return
         }
         
@@ -921,7 +921,7 @@ extension RingSessionManager {
     
     private func sendRealTimeCommand(command: UInt8, type: RealTimeReading, action: Action?) {
         guard let uartRxCharacteristic, let peripheral else {
-            print("Cannot send real-time command. Peripheral or characteristic not ready.")
+            debugPrint("Cannot send real-time command. Peripheral or characteristic not ready.")
             return
         }
         
@@ -937,7 +937,7 @@ extension RingSessionManager {
             let data = Data(packet)
             peripheral.writeValue(data, for: uartRxCharacteristic, type: .withResponse)
         } catch {
-            print("Failed to create packet: \(error)")
+            debugPrint("Failed to create packet: \(error)")
         }
     }
 }
@@ -947,7 +947,7 @@ extension RingSessionManager {
 extension RingSessionManager {
     func getBatteryStatus(completion: @escaping (BatteryInfo) -> Void) {
         guard let uartRxCharacteristic, let peripheral else {
-            print("Cannot send battery request. Peripheral or characteristic not ready.")
+            debugPrint("Cannot send battery request. Peripheral or characteristic not ready.")
             return
         }
         
@@ -959,13 +959,13 @@ extension RingSessionManager {
             // Store completion handler to call when data is received
             self.batteryStatusCallback = completion
         } catch {
-            print("Failed to create battery packet: \(error)")
+            debugPrint("Failed to create battery packet: \(error)")
         }
     }
     
     private func handleBatteryResponse(packet: [UInt8]) {
         guard packet[0] == RingSessionManager.CMD_BATTERY else {
-            print("Invalid battery packet received.")
+            debugPrint("Invalid battery packet received.")
             return
         }
         
@@ -1040,7 +1040,7 @@ extension RingSessionManager {
 
     private func sendSettingRead(commandId: UInt8) {
         guard let uartRxCharacteristic, let peripheral else {
-            print("Cannot send settings request. Peripheral or characteristic not ready.")
+            debugPrint("Cannot send settings request. Peripheral or characteristic not ready.")
             return
         }
         do {
@@ -1049,13 +1049,13 @@ extension RingSessionManager {
             appendToDebugLog(direction: .sent, bytes: packet)
             peripheral.writeValue(Data(packet), for: uartRxCharacteristic, type: .withResponse)
         } catch {
-            print("Failed to create settings packet: \(error)")
+            debugPrint("Failed to create settings packet: \(error)")
         }
     }
 
     private func sendSettingWrite(commandId: UInt8, isEnabled: Bool) {
         guard let uartRxCharacteristic, let peripheral else {
-            print("Cannot send settings write. Peripheral or characteristic not ready.")
+            debugPrint("Cannot send settings write. Peripheral or characteristic not ready.")
             return
         }
         do {
@@ -1065,7 +1065,7 @@ extension RingSessionManager {
             appendToDebugLog(direction: .sent, bytes: packet)
             peripheral.writeValue(Data(packet), for: uartRxCharacteristic, type: .withResponse)
         } catch {
-            print("Failed to create settings write packet: \(error)")
+            debugPrint("Failed to create settings write packet: \(error)")
         }
     }
 }
@@ -1083,7 +1083,7 @@ extension RingSessionManager {
 
     func getHeartRateLog(completion: @escaping (HeartRateLog) -> Void) {
         guard let uartRxCharacteristic, let peripheral else {
-            print("Cannot send heart rate log request. Peripheral or characteristic not ready.")
+            debugPrint("Cannot send heart rate log request. Peripheral or characteristic not ready.")
             return
         }
         
@@ -1095,18 +1095,18 @@ extension RingSessionManager {
             let data = Data(packet)
             peripheral.writeValue(data, for: uartRxCharacteristic, type: .withResponse)
             
-            print("HRL Commmand Sent")
+            debugPrint("HRL Commmand Sent")
             
             // Store completion handler to call when data is received
             self.heartRateLogCallback = completion
         } catch {
-            print("Failed to create hrl packet: \(error)")
+            debugPrint("Failed to create hrl packet: \(error)")
         }
     }
     
     private func handleHeartRateLogResponse(packet: [UInt8]) {
         guard packet[0] == RingSessionManager.CMD_READ_HEART_RATE else {
-            print("Invalid heart rate log packet received.")
+            debugPrint("Invalid heart rate log packet received.")
             return
         }
         
@@ -1127,7 +1127,7 @@ extension RingSessionManager {
             let xPacket = try makePacket(command: Counter.shared.CMD_X, subData: nil)
             sendPacket(packet: xPacket)
         } catch {
-            print("Failed to create blink twice packet: \(error)")
+            debugPrint("Failed to create blink twice packet: \(error)")
         }
     }
 }

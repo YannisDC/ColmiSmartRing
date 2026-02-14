@@ -75,11 +75,13 @@ struct PressureDataPacketParsingTests {
             startOfDay: startOfDay
         )
 
-        #expect(series.count == 2)
+        #expect(series.count == 3)
         #expect(series[0].value == 45)
         #expect(series[1].value == 60)
+        #expect(series[2].value == 50)
         #expect(series[0].time == startOfDay.addingTimeInterval(30 * 60))
         #expect(series[1].time == startOfDay.addingTimeInterval(60 * 60))
+        #expect(series[2].time == startOfDay.addingTimeInterval(120 * 60))
     }
 
     @Test("HRV no-data packet returns explicit noData")
@@ -111,8 +113,8 @@ struct PressureDataPacketParsingTests {
 
         let second = accumulator.consume(firstData)
         #expect(second != nil)
-        #expect(second?.count == 3)
-        #expect(second?.map(\.value) == [51, 56, 46])
+        #expect(second?.count == 6)
+        #expect(second?.map(\.value) == [51, 56, 46, 44, 55, 51])
 
         let third = accumulator.consume(noData)
         #expect(third?.isEmpty == true)

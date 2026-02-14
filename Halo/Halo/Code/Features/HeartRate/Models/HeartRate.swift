@@ -202,11 +202,11 @@ class HeartRateLogParser {
         
         let dataSize = 13
         
-        print(packet)
+        debugPrint(packet)
         allPackets += packet
         
         if subType == 255 {
-            print("Error: Invalid response from heart rate log request")
+            debugPrint("Error: Invalid response from heart rate log request")
             reset()
             return NoData()
         }
@@ -229,10 +229,10 @@ class HeartRateLogParser {
             end = false
             
             size = Int(packet[2])
-            print("Measurements of the last \(size) hours.")
+            debugPrint("Measurements of the last \(size) hours.")
             
             range = Int(packet[3])
-            print("Measured every \(range) minutes")
+            debugPrint("Measured every \(range) minutes")
             
             rawHeartRates = Array(repeating: -1, count: size * dataSize)
             return nil
@@ -247,7 +247,7 @@ class HeartRateLogParser {
             if startRange.upperBound <= rawHeartRates.count && packetRange.count <= startRange.count {
                 rawHeartRates.replaceSubrange(startRange, with: packet[packetRange].map { Int($0) })
             } else {
-                print("Error: Subrange replacement out of bounds. RawHeartRates count: \(rawHeartRates.count), startRange: \(startRange), packetRange: \(packetRange)")
+                debugPrint("Error: Subrange replacement out of bounds. RawHeartRates count: \(rawHeartRates.count), startRange: \(startRange), packetRange: \(packetRange)")
             }
             index += 9
             return nil

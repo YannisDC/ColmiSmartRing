@@ -148,7 +148,6 @@ enum BigDataSleepParser {
                 let typeRaw = bytes[offset]
                 let minutes = bytes[offset + 1]
                 offset += 2
-                print("typeRaw: \(typeRaw), minutes: \(minutes)")
                 periods.append(SleepPeriod(type: SleepType(rawValue: typeRaw) ?? .noData, minutes: minutes))
             }
 
