@@ -53,3 +53,4 @@ Every contribution goes back into keeping this project free and improving benchm
 - Original reverse-engineering/client work: https://github.com/tahnok/colmi_r02_client/tree/9e08383f6315e3211395edc64e5097333f1a42a5
 - Project background: https://huggingface.co/blog/cyrilzakka/halo-introduction
 - API: https://colmi.puxtril.com
+- Commands: https://github.com/CitizenOneX/colmi_r06_fbp/blob/main/lib/colmi_ring.dart
