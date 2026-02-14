@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "--%" : {
+
+    },
     "%@ %lld%%" : {
       "localizations" : {
         "en" : {
@@ -698,6 +701,16 @@
     },
     "Log" : {
 
+    },
+    "metrics.realtime.section.title" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Realtime tracking"
+          }
+        }
+      }
     },
     "metrics.screen.title" : {
       "localizations" : {

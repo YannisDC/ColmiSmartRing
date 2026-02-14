@@ -145,6 +145,7 @@ struct ReadingsGraphsView: View {
                 hrvSection
                 bloodOxygenSection
                 stressSection
+                realTimeTrackingSection
             }
             .listStyle(.insetGrouped)
             .navigationTitle(L10n.Graphs.navTitle)
@@ -396,6 +397,118 @@ struct ReadingsGraphsView: View {
         } header: {
             Label(L10n.Graphs.stressSection, systemImage: "leaf.fill")
         }
+    }
+
+    // MARK: - Real-time tracking
+
+    private var realTimeTrackingSection: some View {
+        Section {
+            VStack(spacing: 12) {
+                realTimeTrackingCard(
+                    title: L10n.Graphs.heartRateSection,
+                    systemImage: "heart.fill",
+                    valueText: ringSessionManager.realTimeHeartRateBPM.map { "\($0) \(L10n.HomeSummary.bpm)" } ?? L10n.HomeSummary.noData,
+                    startTitle: L10n.HeartRate.streamingStart,
+                    continueTitle: L10n.HeartRate.streamingContinue,
+                    stopTitle: L10n.HeartRate.streamingStop,
+                    startA11y: L10n.A11y.heartRateStart,
+                    continueA11y: L10n.A11y.heartRateContinue,
+                    stopA11y: L10n.A11y.heartRateStop,
+                    onStart: { ringSessionManager.startRealTimeStreaming(type: .heartRate) },
+                    onContinue: { ringSessionManager.continueRealTimeStreaming(type: .heartRate) },
+                    onStop: { ringSessionManager.stopRealTimeStreaming(type: .heartRate) }
+                )
+                realTimeTrackingCard(
+                    title: L10n.Graphs.bloodOxygenSection,
+                    systemImage: "drop.fill",
+                    valueText: ringSessionManager.realTimeBloodOxygenPercent.map { "\($0)%" } ?? L10n.HomeSummary.noData,
+                    startTitle: L10n.SPO2.streamingStart,
+                    continueTitle: L10n.SPO2.streamingContinue,
+                    stopTitle: L10n.SPO2.streamingStop,
+                    startA11y: L10n.A11y.spo2Start,
+                    continueA11y: L10n.A11y.spo2Continue,
+                    stopA11y: L10n.A11y.spo2Stop,
+                    onStart: { ringSessionManager.startRealTimeStreaming(type: .spo2) },
+                    onContinue: { ringSessionManager.continueRealTimeStreaming(type: .spo2) },
+                    onStop: { ringSessionManager.stopRealTimeStreaming(type: .spo2) }
+                )
+            }
+            .padding(.vertical, 4)
+        } header: {
+            Label(L10n.Graphs.realtimeSection, systemImage: "waveform.path.ecg")
+        }
+    }
+
+    private func realTimeTrackingCard(
+        title: String,
+        systemImage: String,
+        valueText: String,
+        startTitle: String,
+        continueTitle: String,
+        stopTitle: String,
+        startA11y: String,
+        continueA11y: String,
+        stopA11y: String,
+        onStart: @escaping () -> Void,
+        onContinue: @escaping () -> Void,
+        onStop: @escaping () -> Void
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Label(title, systemImage: systemImage)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.secondary)
+
+            Text(valueText)
+                .font(.title2.weight(.semibold))
+                .foregroundStyle(.primary)
+
+            HStack(spacing: 8) {
+                realtimeButton(
+                    title: startTitle,
+                    color: .green,
+                    accessibilityLabel: startA11y,
+                    action: onStart
+                )
+                realtimeButton(
+                    title: continueTitle,
+                    color: .orange,
+                    accessibilityLabel: continueA11y,
+                    action: onContinue
+                )
+                realtimeButton(
+                    title: stopTitle,
+                    color: .red,
+                    accessibilityLabel: stopA11y,
+                    action: onStop
+                )
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+    }
+
+    private func realtimeButton(
+        title: String,
+        color: Color,
+        accessibilityLabel: String,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.white)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
+                .background(color)
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .disabled(!ringSessionManager.peripheralConnected)
+        .accessibilityLabel(accessibilityLabel)
     }
 
     private func wireLiveMetricCallbacks() {

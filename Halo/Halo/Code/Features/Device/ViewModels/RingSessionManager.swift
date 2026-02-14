@@ -53,6 +53,10 @@ private let preferredDataTimeZoneIdentifierKey = "preferredDataTimeZoneIdentifie
 @Observable
 class RingSessionManager: NSObject {
     var peripheralConnected = false
+    /// Latest real-time heart rate reading in bpm.
+    var realTimeHeartRateBPM: Int?
+    /// Latest real-time blood oxygen reading in percent.
+    var realTimeBloodOxygenPercent: Int?
     /// Latest battery info reported by the ring.
     var currentBatteryInfo: BatteryInfo?
     /// True when we have a saved ring but no peripheral and are scanning for it.
@@ -448,6 +452,8 @@ extension RingSessionManager: CBCentralManagerDelegate {
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: (any Error)?) {
         debugPrint("Disconnected from peripheral: \(peripheral)")
         peripheralConnected = false
+        realTimeHeartRateBPM = nil
+        realTimeBloodOxygenPercent = nil
         characteristicsDiscovered = false
         stopKeepalive()
     }
@@ -555,11 +561,23 @@ extension RingSessionManager: CBPeripheralDelegate {
         case Counter.shared.CMD_X:
             debugPrint("🔥")
         case RingSessionManager.CMD_START_REAL_TIME:
+            guard packet.count >= 4 else {
+                debugPrint("Real-time response packet too short: \(packet)")
+                break
+            }
             let readingType = RealTimeReading(rawValue: packet[1]) ?? .heartRate
             let errorCode = packet[2]
             
             if errorCode == 0 {
                 let readingValue = packet[3]
+                switch readingType {
+                case .heartRate:
+                    realTimeHeartRateBPM = Int(readingValue)
+                case .spo2:
+                    realTimeBloodOxygenPercent = Int(readingValue)
+                default:
+                    break
+                }
                 debugPrint("Real-Time Reading - Type: \(readingType), Value: \(readingValue)")
             } else {
                 debugPrint("Error in reading - Type: \(readingType), Error Code: \(errorCode)")

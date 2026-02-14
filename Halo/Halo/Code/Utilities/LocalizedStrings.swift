@@ -145,6 +145,7 @@ enum L10n {
 
     enum Graphs {
         static let navTitle = String(localized: "metrics.screen.title")
+        static let realtimeSection = String(localized: "metrics.realtime.section.title")
         static let sleepSection = String(localized: "Sleep")
         static let totalSleepPerNight = String(localized: "Total sleep per night")
         static let noSleepData = String(localized: "No sleep data yet. Sync from the Main tab.")
