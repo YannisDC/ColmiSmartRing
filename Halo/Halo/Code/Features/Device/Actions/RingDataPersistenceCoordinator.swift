@@ -9,6 +9,7 @@ final class RingDataPersistenceCoordinator {
     private var hrvSeriesAccumulator = SplitSeriesPacketParser.SeriesAccumulator()
     private var stressSeriesAccumulator = SplitSeriesPacketParser.SeriesAccumulator()
     private let healthSleepWriter = AppleHealthSleepWriter()
+    private let healthActivityWriter = AppleHealthActivityWriter()
 
     private static let logDateFormatter = ISO8601DateFormatter()
 
@@ -182,7 +183,11 @@ final class RingDataPersistenceCoordinator {
         }
 
         debugPrint("[AutoPersist] Activity save requested. action=\(action) ts=\(formatDate(timestamp)) steps=\(steps) kcal=\(calories) distKm=\(distanceKm)")
-        _ = saveContext(tag: "Activity")
+        if saveContext(tag: "Activity") {
+            Task { @MainActor in
+                await healthActivityWriter.writeActivitySample(timestamp: timestamp, steps: steps, calories: calories)
+            }
+        }
     }
 
     private func todayAt(hour: Int, minute: Int) -> Date {

@@ -53,6 +53,8 @@ private let preferredDataTimeZoneIdentifierKey = "preferredDataTimeZoneIdentifie
 @Observable
 class RingSessionManager: NSObject {
     var peripheralConnected = false
+    /// Latest battery info reported by the ring.
+    var currentBatteryInfo: BatteryInfo?
     /// True when we have a saved ring but no peripheral and are scanning for it.
     var isScanningForRing = false
     /// Peripherals found during "Add ring" scan (name starts with R02_).
@@ -972,6 +974,7 @@ extension RingSessionManager {
         let batteryLevel = Int(packet[1])
         let charging = packet[2] != 0
         let batteryInfo = BatteryInfo(batteryLevel: batteryLevel, charging: charging)
+        currentBatteryInfo = batteryInfo
         
         // Trigger stored callback with battery info
         batteryStatusCallback?(batteryInfo)
