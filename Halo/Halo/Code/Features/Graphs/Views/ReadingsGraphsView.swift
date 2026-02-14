@@ -19,17 +19,14 @@ struct ReadingsGraphsView: View {
     @Query(sort: \StoredBloodOxygenSample.timestamp, order: .reverse) private var storedBloodOxygenSamples: [StoredBloodOxygenSample]
     @Query(sort: \StoredStressSample.timestamp, order: .reverse) private var storedStressSamples: [StoredStressSample]
 
-    @State private var hrvRaw: [UInt8] = []
-    @State private var stressRaw: [UInt8] = []
-    @State private var hrvExpectedCount: Int = 0
-    @State private var stressExpectedCount: Int = 0
-    @State private var hrvRangeMinutes: Int = 30
-    @State private var stressRangeMinutes: Int = 30
+    @State private var hrvSeriesAccumulator = SplitSeriesPacketParser.SeriesAccumulator()
+    @State private var stressSeriesAccumulator = SplitSeriesPacketParser.SeriesAccumulator()
     @State private var selectedWeekOffset: Int = 0
     @State private var selectedDate: Date = Date()
     @State private var visibleWeekOffset: Int?
 
     private let maxPastWeeks = 104
+    private static let swiftDataLogDateFormatter = ISO8601DateFormatter()
 
     private var sortedSleepDays: [StoredSleepDay] {
         storedSleepDays.sorted { $0.sleepDate > $1.sleepDate }
@@ -402,29 +399,8 @@ struct ReadingsGraphsView: View {
     }
 
     private func wireLiveMetricCallbacks() {
-        ringSessionManager.activityDataPacketCallback = { packet in
-            DispatchQueue.main.async {
-                consumeActivityPacket(packet)
-            }
-        }
-        ringSessionManager.hrvDataPacketCallback = { packet in
-            DispatchQueue.main.async {
-                consumeSplitSeriesPacket(packet, isHRV: true)
-            }
-        }
-        ringSessionManager.pressureDataPacketCallback = { packet in
-            DispatchQueue.main.async {
-                consumeSplitSeriesPacket(packet, isHRV: false)
-            }
-        }
-        ringSessionManager.bigDataBloodOxygenPayloadCallback = { payload in
-            DispatchQueue.main.async {
-                consumeBloodOxygenPayload(payload)
-            }
-        }
-
-        // Request fresh metric payloads when the Graphs screen opens so we don't rely on
-        // callbacks having been set earlier during app startup.
+        // Auto-persistence is wired globally by RingDataPersistenceCoordinator in HaloApp.
+        // Keep only the explicit refresh requests when opening the Graphs screen.
         if ringSessionManager.peripheralConnected {
             ringSessionManager.syncActivityData(dayOffset: 0)
             ringSessionManager.syncHRVData(dayOffset: 0)
@@ -451,50 +427,14 @@ struct ReadingsGraphsView: View {
     }
 
     private func consumeSplitSeriesPacket(_ packet: [UInt8], isHRV: Bool) {
-        // Commands 57 (HRV) / 55 (Pressure): split array format with index at byte[1].
-        guard packet.count >= 4 else { return }
-        let index = Int(packet[1])
-        if index == 0 {
-            let total = Int(packet[2])
-            let range = max(1, Int(packet[3]))
-            if isHRV {
-                hrvExpectedCount = total
-                hrvRangeMinutes = range
-                hrvRaw = []
-            } else {
-                stressExpectedCount = total
-                stressRangeMinutes = range
-                stressRaw = []
-            }
-            return
-        }
-
-        let values: [UInt8]
-        if index == 1 {
-            values = Array(packet[3..<min(packet.count, 15)])
-        } else {
-            values = Array(packet[2..<min(packet.count, 15)])
-        }
-
+        // Commands 57 (HRV) / 55 (Pressure): split array format.
         if isHRV {
-            hrvRaw.append(contentsOf: values)
-            let built = buildSeriesFromRaw(hrvRaw, expectedCount: hrvExpectedCount, rangeMinutes: hrvRangeMinutes)
-            persistHRVSeries(built)
+            guard let series = hrvSeriesAccumulator.consume(packet) else { return }
+            persistHRVSeries(series)
         } else {
-            stressRaw.append(contentsOf: values)
-            let built = buildSeriesFromRaw(stressRaw, expectedCount: stressExpectedCount, rangeMinutes: stressRangeMinutes)
-            persistStressSeries(built)
+            guard let series = stressSeriesAccumulator.consume(packet) else { return }
+            persistStressSeries(series)
         }
-    }
-
-    private func buildSeriesFromRaw(_ raw: [UInt8], expectedCount: Int, rangeMinutes: Int) -> [TimeSeriesPoint] {
-        let count = expectedCount > 0 ? min(expectedCount, raw.count) : raw.count
-        let values = Array(raw.prefix(count))
-        let start = Calendar.current.startOfDay(for: Date())
-        return values.enumerated().map { idx, v in
-            let t = start.addingTimeInterval(TimeInterval(idx * rangeMinutes * 60))
-            return TimeSeriesPoint(time: t, value: Double(v))
-        }.filter { $0.value > 0 }
     }
 
     private func consumeBloodOxygenPayload(_ payload: [UInt8]) {
@@ -505,47 +445,114 @@ struct ReadingsGraphsView: View {
     }
 
     private func upsertStoredActivitySample(timestamp: Date, steps: Int, distanceKm: Double, calories: Int) {
+        let action: String
         if let existing = storedActivitySamples.first(where: { $0.timestamp == timestamp }) {
             existing.steps = steps
             existing.distanceKm = distanceKm
             existing.calories = calories
+            action = "UPDATE"
         } else {
             modelContext.insert(StoredActivitySample(timestamp: timestamp, steps: steps, distanceKm: distanceKm, calories: calories))
+            action = "INSERT"
         }
-        try? modelContext.save()
+        print("========== SWIFTDATA SAVE: Activity ==========")
+        print("action: \(action)")
+        print("timestamp: \(swiftDataLogDate(timestamp))")
+        print("steps: \(steps), distanceKm: \(distanceKm), calories: \(calories)")
+        do {
+            try modelContext.save()
+            print("result: SUCCESS")
+        } catch {
+            print("result: FAILED - \(error)")
+        }
+        print("==============================================")
     }
 
     private func persistHRVSeries(_ series: [TimeSeriesPoint]) {
+        var inserted: [TimeSeriesPoint] = []
+        var updated: [TimeSeriesPoint] = []
         for point in series {
             if let existing = storedHRVSamples.first(where: { $0.timestamp == point.time }) {
                 existing.value = point.value
+                updated.append(point)
             } else {
                 modelContext.insert(StoredHRVSample(timestamp: point.time, value: point.value))
+                inserted.append(point)
             }
         }
-        try? modelContext.save()
+        print("============ SWIFTDATA SAVE: HRV =============")
+        print("inserted: \(inserted.count), updated: \(updated.count), totalSeriesPoints: \(series.count)")
+        print("insertedPoints: \(formatSeriesPointsForLog(inserted))")
+        print("updatedPoints: \(formatSeriesPointsForLog(updated))")
+        do {
+            try modelContext.save()
+            print("result: SUCCESS")
+        } catch {
+            print("result: FAILED - \(error)")
+        }
+        print("==============================================")
     }
 
     private func persistBloodOxygenSeries(_ series: [TimeSeriesPoint]) {
+        var inserted: [TimeSeriesPoint] = []
+        var updated: [TimeSeriesPoint] = []
         for point in series {
             if let existing = storedBloodOxygenSamples.first(where: { $0.timestamp == point.time }) {
                 existing.value = point.value
+                updated.append(point)
             } else {
                 modelContext.insert(StoredBloodOxygenSample(timestamp: point.time, value: point.value))
+                inserted.append(point)
             }
         }
-        try? modelContext.save()
+        print("====== SWIFTDATA SAVE: Blood Oxygen ======")
+        print("inserted: \(inserted.count), updated: \(updated.count), totalSeriesPoints: \(series.count)")
+        print("insertedPoints: \(formatSeriesPointsForLog(inserted))")
+        print("updatedPoints: \(formatSeriesPointsForLog(updated))")
+        do {
+            try modelContext.save()
+            print("result: SUCCESS")
+        } catch {
+            print("result: FAILED - \(error)")
+        }
+        print("==========================================")
     }
 
     private func persistStressSeries(_ series: [TimeSeriesPoint]) {
+        var inserted: [TimeSeriesPoint] = []
+        var updated: [TimeSeriesPoint] = []
         for point in series {
             if let existing = storedStressSamples.first(where: { $0.timestamp == point.time }) {
                 existing.value = point.value
+                updated.append(point)
             } else {
                 modelContext.insert(StoredStressSample(timestamp: point.time, value: point.value))
+                inserted.append(point)
             }
         }
-        try? modelContext.save()
+        print("=========== SWIFTDATA SAVE: Stress ===========")
+        print("inserted: \(inserted.count), updated: \(updated.count), totalSeriesPoints: \(series.count)")
+        print("insertedPoints: \(formatSeriesPointsForLog(inserted))")
+        print("updatedPoints: \(formatSeriesPointsForLog(updated))")
+        do {
+            try modelContext.save()
+            print("result: SUCCESS")
+        } catch {
+            print("result: FAILED - \(error)")
+        }
+        print("==============================================")
+    }
+
+    private func swiftDataLogDate(_ date: Date) -> String {
+        Self.swiftDataLogDateFormatter.string(from: date)
+    }
+
+    private func formatSeriesPointsForLog(_ points: [TimeSeriesPoint]) -> String {
+        guard !points.isEmpty else { return "[]" }
+        let values = points.map { point in
+            "{time: \(swiftDataLogDate(point.time)), value: \(point.value)}"
+        }
+        return "[\(values.joined(separator: ", "))]"
     }
 
     private func decodeBigDataBloodOxygen(_ payload: [UInt8]) -> [TimeSeriesPoint] {

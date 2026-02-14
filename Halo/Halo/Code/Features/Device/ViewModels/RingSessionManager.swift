@@ -158,14 +158,26 @@ class RingSessionManager: NSObject {
     var sleepDataCallback: ((SleepData) -> Void)?
     /// Called when Big Data sleep (dataId 39) is received from Colmi service.
     var bigDataSleepCallback: ((BigDataSleepData) -> Void)?
+    /// Always-on callback intended for persistence layer when Big Data sleep is received.
+    var bigDataSleepPersistenceCallback: ((BigDataSleepData) -> Void)?
     /// Called when Big Data blood oxygen payload (dataId 42) is received.
     var bigDataBloodOxygenPayloadCallback: (([UInt8]) -> Void)?
+    /// Always-on callback intended for persistence layer when Big Data blood oxygen payload is received.
+    var bigDataBloodOxygenPayloadPersistenceCallback: (([UInt8]) -> Void)?
     /// Called with each raw HRV data packet (command 57).
     var hrvDataPacketCallback: (([UInt8]) -> Void)?
+    /// Always-on callback intended for persistence layer for HRV packets.
+    var hrvDataPacketPersistenceCallback: (([UInt8]) -> Void)?
     /// Called with each raw pressure/stress data packet (command 55).
     var pressureDataPacketCallback: (([UInt8]) -> Void)?
+    /// Always-on callback intended for persistence layer for pressure packets.
+    var pressureDataPacketPersistenceCallback: (([UInt8]) -> Void)?
     /// Called with each raw activity data packet (command 67).
     var activityDataPacketCallback: (([UInt8]) -> Void)?
+    /// Always-on callback intended for persistence layer for activity packets.
+    var activityDataPacketPersistenceCallback: (([UInt8]) -> Void)?
+    /// Always-on callback intended for persistence layer when a heart-rate log is parsed.
+    var heartRateLogPersistenceCallback: ((HeartRateLog) -> Void)?
     /// Called when the ring is connected and UART characteristics are ready; use this to trigger tracking-settings reads.
     var onReadyForSettingsQuery: (() -> Void)?
     /// Single callback or continuation for any in-flight tracking setting READ; cleared after use.
@@ -664,12 +676,14 @@ extension RingSessionManager {
             if let sleepData = BigDataSleepParser.parseSleepPayload(payload) {
                 print("Big Data sleep received – \(sleepData.sleepDays) day(s)")
                 bigDataSleepCallback?(sleepData)
+                bigDataSleepPersistenceCallback?(sleepData)
             } else {
                 print("Big Data sleep parse failed – payload length: \(payload.count)")
             }
         case Self.bigDataBloodOxygenId:
             print("Big Data blood oxygen received – payload length: \(payload.count)")
             bigDataBloodOxygenPayloadCallback?(payload)
+            bigDataBloodOxygenPayloadPersistenceCallback?(payload)
         default:
             print("Big Data response – dataId: \(dataId), payload length: \(payload.count)")
         }
@@ -861,16 +875,19 @@ extension RingSessionManager {
     private func handleHRVDataResponse(packet: [UInt8]) {
         guard packet.count >= 2 else { return }
         hrvDataPacketCallback?(packet)
+        hrvDataPacketPersistenceCallback?(packet)
     }
 
     private func handlePressureDataResponse(packet: [UInt8]) {
         guard packet.count >= 2 else { return }
         pressureDataPacketCallback?(packet)
+        pressureDataPacketPersistenceCallback?(packet)
     }
 
     private func handleActivityDataResponse(packet: [UInt8]) {
         guard packet.count >= 2 else { return }
         activityDataPacketCallback?(packet)
+        activityDataPacketPersistenceCallback?(packet)
     }
     
     func sendPacket(packet: [UInt8]) {
@@ -1096,6 +1113,7 @@ extension RingSessionManager {
         guard let log = hrp.parse(packet: packet) as? HeartRateLog else {
             return
         }
+        heartRateLogPersistenceCallback?(log)
         heartRateLogCallback?(log)
         heartRateLogCallback = nil
     }

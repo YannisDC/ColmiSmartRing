@@ -15,6 +15,7 @@ struct SleepSectionView: View {
     @State private var lastSleepData: SleepData?
     @State private var lastBigDataSleep: BigDataSleepData?
     @State private var selectedStoredSleepDay: StoredSleepDay?
+    private static let swiftDataLogDateFormatter = ISO8601DateFormatter()
 
     private var sortedStoredSleepDays: [StoredSleepDay] {
         storedSleepDays.sorted { $0.sleepDate > $1.sleepDate }
@@ -106,6 +107,9 @@ struct SleepSectionView: View {
     private func saveBigDataSleep(_ bigData: BigDataSleepData) {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
+        var insertedDays = 0
+        var updatedDays = 0
+        var dayLogs: [String] = []
         for day in bigData.days {
             let daysAgo = Int(day.daysAgo)
             let nightDate = calendar.date(byAdding: .day, value: -daysAgo, to: today) ?? today
@@ -114,6 +118,7 @@ struct SleepSectionView: View {
             )
             let existing = (try? modelContext.fetch(descriptor))?.first
             if let existingDay = existing {
+                updatedDays += 1
                 existingDay.sleepStart = Int(day.sleepStart)
                 existingDay.sleepEnd = Int(day.sleepEnd)
                 existingDay.syncDate = Date()
@@ -126,6 +131,7 @@ struct SleepSectionView: View {
                     existingDay.periods.append(p)
                 }
             } else {
+                insertedDays += 1
                 let storedPeriods = makeStoredPeriods(from: day, nightDate: nightDate)
                 let storedDay = StoredSleepDay(
                     daysAgo: daysAgo,
@@ -136,8 +142,24 @@ struct SleepSectionView: View {
                 )
                 modelContext.insert(storedDay)
             }
+            let periodLog = day.periods.map { period in
+                "{type: \(period.type.rawValue), minutes: \(period.minutes)}"
+            }.joined(separator: ", ")
+            dayLogs.append(
+                "{daysAgo: \(daysAgo), nightDate: \(swiftDataLogDate(nightDate)), sleepStartMin: \(day.sleepStart), sleepEndMin: \(day.sleepEnd), periods: [\(periodLog)]}"
+            )
         }
-        try? modelContext.save()
+
+        print("=========== SWIFTDATA SAVE: Sleep ===========")
+        print("insertedDays: \(insertedDays), updatedDays: \(updatedDays), totalDays: \(bigData.days.count)")
+        print("days: [\(dayLogs.joined(separator: ", "))]")
+        do {
+            try modelContext.save()
+            print("result: SUCCESS")
+        } catch {
+            print("result: FAILED - \(error)")
+        }
+        print("=============================================")
     }
 
     private func makeStoredPeriods(from day: SleepDay, nightDate: Date) -> [StoredSleepPeriod] {
@@ -148,5 +170,9 @@ struct SleepSectionView: View {
             elapsedMinutes += Int(period.minutes)
             return StoredSleepPeriod(type: period.type, minutes: Int(period.minutes), startTimestamp: start)
         }
+    }
+
+    private func swiftDataLogDate(_ date: Date) -> String {
+        Self.swiftDataLogDateFormatter.string(from: date)
     }
 }

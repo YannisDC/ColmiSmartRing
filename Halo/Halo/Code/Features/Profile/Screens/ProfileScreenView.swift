@@ -90,24 +90,36 @@ struct ProfileScreenView: View {
 
     private func deleteAllLocalSwiftData() {
         do {
-            try deleteAll(StoredSleepPeriod.self)
-            try deleteAll(StoredSleepDay.self)
-            try deleteAll(StoredHeartRateLog.self)
-            try deleteAll(StoredActivitySample.self)
-            try deleteAll(StoredHRVSample.self)
-            try deleteAll(StoredBloodOxygenSample.self)
-            try deleteAll(StoredStressSample.self)
+            let deletedSleepPeriods = try deleteAll(StoredSleepPeriod.self)
+            let deletedSleepDays = try deleteAll(StoredSleepDay.self)
+            let deletedHeartRateLogs = try deleteAll(StoredHeartRateLog.self)
+            let deletedActivity = try deleteAll(StoredActivitySample.self)
+            let deletedHRV = try deleteAll(StoredHRVSample.self)
+            let deletedBloodOxygen = try deleteAll(StoredBloodOxygenSample.self)
+            let deletedStress = try deleteAll(StoredStressSample.self)
+
+            print("======= SWIFTDATA SAVE: Delete All =======")
+            print("deleted StoredSleepPeriod: \(deletedSleepPeriods)")
+            print("deleted StoredSleepDay: \(deletedSleepDays)")
+            print("deleted StoredHeartRateLog: \(deletedHeartRateLogs)")
+            print("deleted StoredActivitySample: \(deletedActivity)")
+            print("deleted StoredHRVSample: \(deletedHRV)")
+            print("deleted StoredBloodOxygenSample: \(deletedBloodOxygen)")
+            print("deleted StoredStressSample: \(deletedStress)")
             try modelContext.save()
+            print("result: SUCCESS")
+            print("==========================================")
         } catch {
             print("Failed to delete local SwiftData: \(error)")
         }
     }
 
-    private func deleteAll<T: PersistentModel>(_ type: T.Type) throws {
+    private func deleteAll<T: PersistentModel>(_ type: T.Type) throws -> Int {
         let descriptor = FetchDescriptor<T>()
         let items = try modelContext.fetch(descriptor)
         for item in items {
             modelContext.delete(item)
         }
+        return items.count
     }
 }

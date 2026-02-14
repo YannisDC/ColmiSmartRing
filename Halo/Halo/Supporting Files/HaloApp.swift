@@ -11,6 +11,7 @@ import SwiftData
 @main
 struct HaloApp: App {
     @State private var ringSessionManager = RingSessionManager()
+    @State private var ringDataPersistenceCoordinator: RingDataPersistenceCoordinator?
 
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -41,6 +42,17 @@ struct HaloApp: App {
                     .tabItem { Label(L10n.Tab.metrics, systemImage: "heart.text.square.fill") }
                 ProfileScreenView(ringSessionManager: ringSessionManager)
                     .tabItem { Label(L10n.Tab.profile, systemImage: "person.crop.circle.fill") }
+            }
+            .onAppear {
+                if ringDataPersistenceCoordinator == nil {
+                    let coordinator = RingDataPersistenceCoordinator(
+                        modelContext: sharedModelContainer.mainContext,
+                        ringSessionManager: ringSessionManager
+                    )
+                    coordinator.start()
+                    ringDataPersistenceCoordinator = coordinator
+                    print("[AutoPersist] RingDataPersistenceCoordinator started")
+                }
             }
         }
         .modelContainer(sharedModelContainer)

@@ -13,6 +13,7 @@ struct HeartRateSectionView: View {
     @Bindable var ringSessionManager: RingSessionManager
     @Query(sort: \StoredHeartRateLog.timestamp, order: .reverse) private var storedHeartRateLogs: [StoredHeartRateLog]
     @State private var data: [HeartRateDataPoint] = []
+    private static let swiftDataLogDateFormatter = ISO8601DateFormatter()
 
     var body: some View {
         Section(L10n.HeartRate.logSectionTitle) {
@@ -103,16 +104,43 @@ struct HeartRateSectionView: View {
         let descriptor = FetchDescriptor<StoredHeartRateLog>(
             predicate: #Predicate<StoredHeartRateLog> { $0.dayStart == dayStart }
         )
+        let action: String
         if let existing = (try? modelContext.fetch(descriptor))?.first {
             existing.timestamp = log.timestamp
             existing.heartRates = log.heartRates
             existing.size = log.size
             existing.index = log.index
             existing.range = log.range
+            action = "UPDATE"
         } else {
             let stored = StoredHeartRateLog.from(log)
             modelContext.insert(stored)
+            action = "INSERT"
         }
-        try? modelContext.save()
+        let nonZeroEntries = log.heartRates.enumerated()
+            .filter { $0.element > 0 }
+            .map { offset, bpm in
+                let minutes = offset * log.range
+                return "{minute: \(minutes), bpm: \(bpm)}"
+            }
+            .joined(separator: ", ")
+
+        print("========= SWIFTDATA SAVE: Heart Rate Log =========")
+        print("action: \(action)")
+        print("dayStart: \(swiftDataLogDate(dayStart))")
+        print("timestamp: \(swiftDataLogDate(log.timestamp))")
+        print("size: \(log.size), index: \(log.index), range: \(log.range)")
+        print("nonZeroHeartRates: [\(nonZeroEntries)]")
+        do {
+            try modelContext.save()
+            print("result: SUCCESS")
+        } catch {
+            print("result: FAILED - \(error)")
+        }
+        print("==================================================")
+    }
+
+    private func swiftDataLogDate(_ date: Date) -> String {
+        Self.swiftDataLogDateFormatter.string(from: date)
     }
 }
